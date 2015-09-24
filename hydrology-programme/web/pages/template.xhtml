@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"      
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Hydrology Programme</title>      
+        <link rel="SHORTCUT ICON" href="#{GlobalResources.rsc_title_icon}"/>
+        <f:facet name="first">        
+            <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>                                                
+            <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_skin}"/>               
+        </f:facet>                         
+        <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_skin_general_customised}"/>
+        <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_fes_layout}"/> 
+        <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_fes_layout_skin}"/> 
+        <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_ddsmoothmenu}"/> 
+        <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_ddsmoothmenu_skin}"/> 
+        <script type="text/javascript"  src="#{GlobalResources.rsc_js_utilities}"/>
+        <script type="text/javascript"  src="#{GlobalResources.rsc_js_primefaces_customised}"/>
+        <script type="text/javascript"  src="#{GlobalResources.rsc_js_ddsmoothmenu}"/>
+        <script type="text/javascript"  src="#{GlobalResources.rsc_js_plg_scroll_resizable}"/>
+        <script type="text/javascript"  src="#{GlobalResources.rsc_js_plg_currencyFormatter}"/>        
+        <style type="text/css">            
+            .ui-widget,html,input, textarea, keygen, select,button{font-family:Verdana,Arial,sans-serif;font-size:11px;}            
+
+            
+
+        </style>
+        <script type="text/javascript">
+            ddsmoothmenu.init({
+                mainmenuid: "smoothmenu1", //menu DIV id
+                orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+                classname: 'ddsmoothmenu', //class added to menu's outer DIV
+                //customtheme: ["#1c5a80", "#18374a"],
+                contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+            })
+
+        </script>
+        <ui:insert name="head"></ui:insert>      
+    </h:head>
+    <h:body>        
+        <div class="header header-customisation">
+            <div class="current-page-icon-container" >                
+                <ui:insert name="page_header_icon">
+
+                </ui:insert>
+                <a href="#{GlobalResources.project_path}pages/HomePage.htm" title="Go to HomePage">
+                    <img src="https://database.fes.org.in/web-resources/staff-scheduling/images/icons/home-icon_60x40.png"/></a>
+                <div style="text-transform: uppercase;font-size: 13px">#{GlobalSettings.ent_login_user.userName}</div>
+
+            </div>
+            <div id="smoothmenu1" class="ddsmoothmenu">
+                <ul>
+                    <li><a >Masters</a>
+                        <ul>                           
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/masters/watershed.htm">Watershed</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/masters/wmembers.htm">Watershed Members</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/masters/streamgauge.htm">Stream Gauge</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/masters/raingauge.htm">Rain Gauge</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/masters/observwell.htm">Observation Well</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/masters/plotdet.htm">Plot Details</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/masters/usermst.htm">User</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a >Data Entry</a>
+                        <ul>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/entry/rainfall_data.htm">Rainfall Data</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/entry/welldata.htm">Bore-well Data</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/entry/soildata.htm">Soil Moisture</a>
+                            </li>
+                            <li>
+                                <a href="#{GlobalResources.project_path}pages/entry/stream_flaw_data.htm">Stream Flow</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#{GlobalResources.project_path}pages/settings/index.htm">Settings</a></li>
+                    <li><a href="#{GlobalResources.project_path}Logout">Log Out</a></li>   
+                </ul>                
+                <br style="clear: left" />
+            </div>
+        </div>
+        <div class="container" align="center">                        
+            <div class="header-padding"/>
+            <div style="width: 80%;min-width: 900px;" align="left">
+                <h:form id="utility_form" prependId="false">
+                    <script type="text/javascript">
+                        var hp_trans_succeed=false;
+                    </script>
+                    <div align="left">
+                        <h:panelGroup id="pnl_GeneralDialog">
+                            <p:dialog  header="#{GlobalUtilities.out_GeneralDialog_header}" widgetVar="pw_GeneralDialog"
+                                       modal="true"
+                                       hideEffect="#{GlobalResources.generalDialog_show}"
+                                       showEffect="#{GlobalResources.generalDialog_hide}"
+                                       id="GeneralDialog" 
+                                       >
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <h:outputText id="out_GeneralDialog"
+                                                  value="#{GlobalUtilities.out_GeneralDialog_detail}" />
+                                </h:panelGrid>
+                            </p:dialog>            
+                        </h:panelGroup>
+                    </div>                    
+                    <p:dialog modal="true" 
+                              widgetVar="statusDialog"
+                              header="Status"   
+                              draggable="false" closable="false"
+                              resizable="false">  
+                        <p:graphicImage value="#{GlobalResources.rsc_img_loading_bar}" />  
+                    </p:dialog>  
+                    <p:ajaxStatus onstart="statusDialog.show();" onsuccess="hp_trans_succeed=true;statusDialog.hide();"
+                                  onerror="hp_trans_succeed=false;statusDialog.hide();ShowConnectionError('GeneralDialog');return false;"/>  
+                </h:form>
+
+                <ui:insert name="content">
+
+                </ui:insert>
+
+                <div class="footer-padding"/>
+            </div>
+        </div>
+        <div align="center" class="footer">Created By                
+            <a href="http://www.fes.org.in/" target="_blank">Foundation For Ecological Security</a>        
+        </div>
+    </h:body>
+</html>
+

@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    .fc-event-time{display:none}
+                    .fc-event-inner{text-align: center}
+                </style>
+                <script type="text/javascript" src="#{GlobalResources.rsc_js_plg_input_currencyFormatter}"/>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+                
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form1" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Data Entry" url="#{Hp_GlobalSettings.brHp_entry}" />                          
+                        <p:menuitem value="Stream Flow Data" url="#" />  
+                    </p:breadCrumb>  
+                    <div>
+                        <div class="component-margin" align="left">
+                            <table class="element-table">
+                                <tr>
+                                    <td class="entry-component-label">Watershed : </td>
+                                    <td>
+                                        <p:selectOneMenu 
+                                            id="ddl_watershed"
+                                            style="width:200px"
+                                            value="#{stream_flaw_data.ddl_watershed}"
+                                            valueChangeListener="#{stream_flaw_data.ddl_watershed_changed}">                                            
+                                            <f:selectItems value="#{stream_flaw_data.ddl_watershed_options}"/>
+                                            <p:ajax event="change"
+                                                    process="ddl_watershed"
+                                                    update="@this,ddl_streamgauge"
+                                                    oncomplete="pw_scheduler1.update()"/>
+                                        </p:selectOneMenu>
+                                    </td>
+                                     <td class="entry-component-label">Stream Gauge : </td>
+                                    <td>
+                                        <p:selectOneMenu 
+                                            id="ddl_streamgauge"
+                                            style="width:200px"
+                                            value="#{stream_flaw_data.ddl_streamgauge}"
+                                            valueChangeListener="#{stream_flaw_data.ddl_streamgauge_changed}">                                            
+                                            <f:selectItems value="#{stream_flaw_data.ddl_streamgauge_options}"/>
+                                            <p:ajax event="change"
+                                                    process="ddl_streamgauge"
+                                                    update="@this"
+                                                    oncomplete="pw_scheduler1.update()"/>
+                                        </p:selectOneMenu>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="component-margin" >                            
+                            <h:panelGroup id="pnl_scheduler1">
+                                <p:schedule id="scheduler1" value="#{stream_flaw_data.scheduler1_value}"
+                                            widgetVar="pw_scheduler1"
+                                            rightHeaderTemplate="" 
+                                            view="month"
+                                            aspectRatio="3"
+                                            draggable="false"
+                                            resizable="false"                                                                                        
+                                            >  
+                                    <p:ajax event="dateSelect" listener="#{stream_flaw_data.onDateSelect}" onstart="#{GlobalSettings.ent_login_user.pfaRsoNumber==null?'return false;':''};if($('#ddl_watershed select').val().trim()=='' || $('#ddl_streamgauge select').val().trim()==''){return false;}" update="pnl_manage_unit" oncomplete="pw_dlg_mange_unit.show()" />  
+                                    <p:ajax event="eventSelect" listener="#{stream_flaw_data.onEventSelect}" onstart="#{GlobalSettings.ent_login_user.pfaRsoNumber==null?'return false;':''}if($('#ddl_watershed select').val().trim()=='' || $('#ddl_streamgauge select').val().trim()==''){return false;}" update="pnl_manage_unit" oncomplete="pw_dlg_mange_unit.show()" />  
+                                </p:schedule>  
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                    <p:dialog widgetVar="pw_dlg_mange_unit"
+                              id="dlg_mange_unit" modal="true"
+                              header="Water Flow Unit"
+                              showEffect="slide">
+                        <h:panelGroup id="pnl_manage_unit">
+                            <table class="element-table">
+                                <tr>
+                                    <td class="entry-component-label">Date: </td>
+                                    <td>
+                                        <h:outputText value="#{stream_flaw_data.selectedDate}">
+                                            <f:convertDateTime pattern="#{GlobalUtilities.dateFormat}"/>
+                                        </h:outputText>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="entry-component-label">Water Flow in cm: </td>
+                                    <td>
+                                        <p:inputText id="txt_unit" value="#{stream_flaw_data.txt_unit}" size="5" style="text-align: right"/> <label class="entry-component-label"> CM</label>
+                                    </td>
+                                </tr>
+                                <tr>                                    
+                                    <td align="center" colspan="2">
+                                        <p:commandButton value="Update"
+                                                         icon="ui-icon-disk"
+                                                         actionListener="#{stream_flaw_data.btn_update_clicked}"
+                                                         process="@this,txt_unit"
+                                                         update="@this"
+                                                         oncomplete="pw_scheduler1.update();pw_dlg_mange_unit.hide();"/>
+                                        <p:commandButton value="Cancel"
+                                                         icon="ui-icon-cancel"
+                                                         style="margin-left: 10px"
+                                                         onclick="pw_dlg_mange_unit.hide();return false;"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <script type="text/javascript">
+                                $('#txt_unit').autoNumeric({aSep: '', dGroup: '2', vMin: '0',vMax:'99999999.99',aPad: false});
+                            </script>
+                        </h:panelGroup>
+                    </p:dialog>
+                    <p:growl id="messages" showDetail="true" sticky="true"/>  
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

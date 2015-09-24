@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker  ,.component-width,.component-width select{
+                        width:200px;
+                        max-width: 200px;
+                        max-height: 80px;
+                    }
+                </style>
+                <script type="text/javascript">
+                    var v_entry_no;
+                    function validateTxtCommonEntry1(){
+                        $('#err_txt_common_entry_1').text('')
+                        if($('#txt_common_entry_1').val().trim()==''){
+                            if(v_entry_no==1){
+                                $('#err_txt_common_entry_1').text('Please enter RSO Name');
+                            }else if(v_entry_no==2){
+                                $('#err_txt_common_entry_1').text('Please enter District Name');
+                            }else if(v_entry_no==3){
+                                $('#err_txt_common_entry_1').text('Please enter PFA Name');
+                            }else if(v_entry_no==4){
+                                $('#err_txt_common_entry_1').text('Please enter Watershed Name');
+                            }
+                            return false;
+                        }
+                        return true;
+                    }
+                    function validateEntry(){
+                        var valid=true;
+                        if(!validateTxtCommonEntry1()){
+                            valid=false;                           
+                        }
+                        return valid;
+                    }
+                    function showCommonEntryDialog(p_entry_no){
+                        v_entry_no=p_entry_no;
+                        var v_button_text;
+                        var v_label;                        
+                        if(p_entry_no==1){
+                            v_label='RSO Name : ';
+                            v_button_text='Create New RSO';
+                        }else if(p_entry_no==2){
+                            v_label='District Name : ';
+                            v_button_text='Create New District';
+                        }else if(p_entry_no==3){
+                            v_label='PFA Name : ';
+                            v_button_text='Create New PFA';
+                        }else if(p_entry_no==4){
+                            v_label='Watershed Name : ';
+                            v_button_text='Create New Watershed';
+                        }
+                        $('#entry_label_1').text(v_label);
+                        $('#txt_common_entry_1').val('');
+                        $('#hdn_common_entry_no').val(p_entry_no);
+                        $('#btn_common_entry_create .ui-button-text').text(v_button_text);                        
+                        pw_dlg_common_entry_block.show();                                                
+                    }
+                </script>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+                
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form1" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Masters" url="#{Hp_GlobalSettings.brHp_mst}" />                          
+                        <p:menuitem value="Watershed" url="#" />  
+                    </p:breadCrumb>  
+                    <div>
+                        <h:panelGroup id="pnl_tbl_wshed">
+
+                            <p:dataTable 
+                                id="tbl_wshed"
+                                var="wshed"  value="#{watershed.tbl_wshed_list}"
+                                filteredValue="#{watershed.tbl_wshed_list_filtered}"
+                                filterDelay="300"
+                                paginator="true"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                rowsPerPageTemplate="5,10,15,20"
+                                paginatorPosition="top"
+                                rows="5"
+                                styleClass="component-margin ui-datatable-hor-scroll">  
+                                <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <f:facet name="header">  
+                                    Watershed Details 
+                                </f:facet>
+                                <p:column style="width: 65px" headerText="RSO Name" 
+                                          sortBy="#{wshed.rsoNo.rsoName}"
+                                          filterBy="#{wshed.rsoNo.rsoName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{wshed.rsoNo.rsoName}
+                                </p:column>  
+                                <p:column style="width: 65px" headerText="District Name" 
+                                          sortBy="#{wshed.districtNo.districtName}"
+                                          filterBy="#{wshed.districtNo.districtName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{wshed.districtNo.districtName}
+                                </p:column> 
+                                <p:column style="width: 65px" headerText="PFA Name" 
+                                          sortBy="#{wshed.pfaNo.pfaName}"
+                                          filterBy="#{wshed.pfaNo.pfaName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{wshed.pfaNo.pfaName}
+                                </p:column> 
+                                <p:column style="width: 65px" headerText="Watershed Name" 
+                                          sortBy="#{wshed.wshedName}"
+                                          filterBy="#{wshed.wshedName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{wshed.wshedName}
+                                </p:column> 
+
+                            </p:dataTable>
+
+                            <p:panel header="WaterShed Entry" id="pnl_watershed_entry" styleClass="component-margin" toggleable="true" rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber==null}">
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label">RSO : </td>
+                                        <td class="entry-component-detail">
+                                            <p:selectOneMenu id="ddl_rso"
+                                                             styleClass="component-width"
+                                                             value="#{watershed.ddl_rso}" 
+                                                             valueChangeListener="#{watershed.ddl_rso_changed}">
+                                                <f:selectItems value="#{watershed.ddl_rso_options}"/>
+                                                <p:ajax event="change"
+                                                        process="ddl_rso"
+                                                        update="ddl_district,ddl_pfa,ddl_wshed"
+                                                        />
+                                            </p:selectOneMenu>                                    
+                                        </td>
+                                        <td valign="middle">
+                                            <p:commandLink onclick="showCommonEntryDialog(1);return false;"
+                                                           value="Create New"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label">District : </td>
+                                        <td class="entry-component-detail">
+                                            <p:selectOneMenu id="ddl_district"
+                                                             styleClass="component-width"
+                                                             value="#{watershed.ddl_district}" 
+                                                             valueChangeListener="#{watershed.ddl_district_changed}">
+                                                <f:selectItems value="#{watershed.ddl_district_options}"/>
+                                                <p:ajax event="change"
+                                                        process="ddl_district"
+                                                        update="ddl_pfa,ddl_wshed"
+                                                        />
+                                            </p:selectOneMenu>
+                                        </td>
+                                        <td valign="middle">
+                                            <p:commandLink 
+                                                id="hyp_create_district"
+                                                onclick="showCommonEntryDialog(2);return false;"
+                                                value="Create New"
+                                                style="display:#{watershed.ddl_rso!=null?'block':'none'}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label">PFA Name : </td>
+                                        <td class="entry-component-detail">
+                                            <p:selectOneMenu id="ddl_pfa"
+                                                             styleClass="component-width"
+                                                             value="#{watershed.ddl_pfa}" 
+                                                             valueChangeListener="#{watershed.ddl_pfa_changed}">
+                                                <f:selectItems value="#{watershed.ddl_pfa_options}"/>
+                                                <p:ajax event="change"
+                                                        process="ddl_pfa"
+                                                        update="ddl_wshed"
+                                                        />
+                                            </p:selectOneMenu>
+                                        </td>
+                                        <td valign="middle">
+                                            <p:commandLink 
+                                                id="hyp_create_pfa"
+                                                onclick="showCommonEntryDialog(3);return false;"
+                                                value="Create New"
+                                                style="display:#{watershed.ddl_district!=null?'block':'none'}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label">Watershed : </td>
+                                        <td class="entry-component-detail">
+                                            <p:selectOneMenu id="ddl_wshed"
+                                                             styleClass="component-width"
+                                                             >
+                                                <f:selectItems value="#{watershed.ddl_wshed_options}"/>                                   
+                                            </p:selectOneMenu>
+                                        </td>
+                                        <td valign="middle">
+                                            <p:commandLink 
+                                                id="hyp_create_wshed"
+                                                onclick="showCommonEntryDialog(4);return false;"
+                                                value="Create New"
+                                                style="display:#{watershed.ddl_pfa!=null?'block':'none'}"/>
+                                        </td>
+                                    </tr>
+                                </table>                        
+                            </p:panel>
+                            <p:dialog id="dlg_common_entry_block"
+                                      widgetVar="pw_dlg_common_entry_block"
+                                      modal="true">
+                                <h:panelGroup id="pnl_dlg_common_entry_block">
+                                    <table>
+                                        <tr>
+                                            <td class="entry-component-label" valign="middle"  style="white-space: nowrap">
+                                                <label id="entry_label_1"/><label class="mandatory-text">*</label>
+                                            </td>
+                                            <td>
+                                                <p:inputText id="txt_common_entry_1"
+                                                             value="#{watershed.txt_common_entry_1}"
+                                                             style="text-transform: uppercase"                                                     
+                                                             styleClass="component-width"/>
+                                                <div id="err_txt_common_entry_1" class="error-message"/>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <p:commandButton id="btn_common_entry_create"
+                                                                 actionListener="#{watershed.btn_common_entry_create}"
+                                                                 value="temp"
+                                                                 icon="ui-icon-disk"
+                                                                 process="pnl_dlg_common_entry_block,pnl_watershed_entry"
+                                                                 update="growl1,pnl_watershed_entry,pnl_tbl_wshed"
+                                                                 onclick="if(!validateEntry()){return false}"
+                                                                 oncomplete="pw_dlg_common_entry_block.hide()"/>
+                                                <h:inputHidden id="hdn_common_entry_no" value="#{watershed.hdn_common_entry_no}"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </h:panelGroup>
+                            </p:dialog>
+
+                        </h:panelGroup>
+                    </div>
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

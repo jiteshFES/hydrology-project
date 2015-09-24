@@ -1,0 +1,353 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker  ,.component-width,.component-width select{
+                        width:200px;
+                        max-width: 200px;
+                        max-height:100px;
+                    }
+                </style>
+                <script type="text/javascript" src="#{GlobalResources.rsc_js_plg_input_currencyFormatter}"/>
+                <script type="text/javascript">
+                    function validateEntries(){
+                        var valid=true;
+                        if(valid){
+                            $('#pnl_well_data_entry select').each(function(){                                
+                                if($(this).val()==null || $(this).val().trim()==''){showRequiredMessage();valid=false;return;}
+                            })
+                        }
+                        $('#pnl_well_data_entry input').each(function(){                                
+                            if($(this).val().trim()==''){showRequiredMessage();valid=false;return;}
+                        })                        
+                        return valid;  
+                    }
+                    function showRequiredMessage(){
+                        SetAndShowDialog('GeneralDialog','Fill all required field','Please fill all required field');
+                    }
+                </script>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form3a" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Data Entry" url="#{Hp_GlobalSettings.brHp_entry}" />                          
+                        <p:menuitem value="Bore-Well Data" url="#" />  
+                    </p:breadCrumb>  
+                    <div class="component-margin">
+                        <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+
+                            <p:commandButton value="Add New"
+                                             icon="ui-icon-plusthick"
+                                             actionListener="#{wellData.addNewData}"
+                                             process="@this"
+                                             update="pnl_well_data_entry"
+                                             oncomplete="pw_dlg_well_data_entry.show();"/>                            
+                            <br/><br/>
+
+                        </h:panelGroup>
+                        <div>
+                            <h:panelGroup id="pnl_tbl_welldata">
+                                <p:dataTable 
+                                    id="tbl_welldata"
+                                    var="welldata"  value="#{wellData.tbl_welldata_list}"
+                                    filteredValue="#{wellData.tbl_welldata_list_filtered}"
+                                    filterDelay="300"
+                                    paginator="true"
+                                    paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                    rowsPerPageTemplate="5,10,15,20"
+                                    paginatorPosition="top"
+                                    styleClass="ui-datatable-hor-scroll"
+                                    rows="5"
+                                    editable="true">  
+                                    <f:facet name="header">  
+                                        Observation Well Data
+                                    </f:facet>
+                                    <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                    <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                    <p:column style="width: 65px" headerText="Watershed Name" 
+                                              sortBy="#{welldata.odataWshedNo.wshedName}"
+                                              filterBy="#{welldata.odataWshedNo.wshedName}"
+                                              filterMatchMode="contains"
+                                              >  
+                                        #{welldata.odataWshedNo.wshedName}
+                                    </p:column>
+                                    <p:column  headerText="Farmer Name"> 
+                                        <h:outputText value="#{welldata.odataObwellSrno.obwellFarmer}"/>                                                   
+                                    </p:column> 
+
+                                    <p:column style="width: 65px" headerText="Survey No"> 
+                                        <h:outputText value="#{welldata.odataObwellSrno.obwellLocation}"/>                                                   
+                                    </p:column> 
+                                    <p:column style="width: 65px" headerText="Collection Date">
+                                        <h:outputText value="#{welldata.odataDate}"> 
+                                            <f:convertDateTime pattern="#{GlobalUtilities.dateFormat}"/>
+                                        </h:outputText>                                        
+                                    </p:column>
+                                    <p:column style="width: 65px" headerText="SWL (mts)">              
+                                        <div align="right">
+                                            <h:outputText value="#{welldata.odataSwlMts}"/>                                                                                       
+                                        </div>
+                                    </p:column> 
+                                    <p:column style="width: 65px" headerText="PWL (mts)">
+                                        <div align="right">
+                                            <h:outputText value="#{welldata.odataPwlMts}"/>                                                   
+                                        </div>
+                                    </p:column>
+                                    <p:column style="width: 65px" headerText="PT (hrs)">
+                                        <div align="right">
+                                            <h:outputText value="#{welldata.odataDrumTime}"/>                                                   
+                                        </div>
+                                    </p:column>
+                                    <p:column style="width: 65px" headerText="PHD (hours)">
+                                        <div align="right">
+                                            <h:outputText value="#{welldata.odataPumpHrsDay}"/>                                                   
+                                        </div>                                    
+                                    </p:column> 
+                                    <p:column style="width: 65px" headerText="PDM (days)">
+                                        <div align="right">
+                                            <h:outputText value="#{welldata.odataPumpDaysMonth}"/>                                                   
+                                        </div>                                   
+                                    </p:column>
+                                    <p:column style="width:20px;display:#{GlobalSettings.ent_login_user.pfaRsoNumber!=null?'table-cell':'none'}">  
+                                        <f:facet name="header">
+                                            <center>
+                                                <span class="ui-icon ui-icon-pencil"/>
+                                            </center>
+                                        </f:facet>
+                                        <p:commandButton icon="ui-icon-pencil"
+                                                         process=":form3a:pnl_tbl_welldata"
+                                                         update=":form3a:pnl_well_data_entry"
+                                                         oncomplete="pw_dlg_well_data_entry.show();">
+                                            <f:setPropertyActionListener
+                                                value="#{welldata}"
+                                                target="#{wellData.ent_welldata_edit}"/>
+                                        </p:commandButton>
+                                    </p:column>  
+                                    <p:column style="width:20px;display:#{GlobalSettings.ent_login_user.pfaRsoNumber!=null?'table-cell':'none'}">
+                                        <f:facet name="header">
+                                            <center>
+                                                <span class="ui-icon ui-icon-trash"/>
+                                            </center>
+                                        </f:facet>
+                                        <p:commandButton icon="ui-icon-trash"
+                                                         process=":form3a:pnl_tbl_welldata"
+                                                         update=":form3a:pnl_tbl_welldata">
+                                            <f:setPropertyActionListener
+                                                value="#{welldata}"
+                                                target="#{wellData.ent_welldata_remove}"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </h:panelGroup>
+                            <table class="element-table">
+                                <tr>
+                                    <td class="entry-component-label">
+                                        SWL
+                                    </td>
+                                    <td>
+                                        Static Water Level
+                                    </td>
+                                    <td class="entry-component-label">
+                                        PWL
+                                    </td>
+                                    <td>
+                                        Pumping Water Level
+                                    </td>
+                                    <td class="entry-component-label">
+                                        PT (seconds)
+                                    </td>
+                                    <td>
+                                        Pumping Time for filling 100 ltrs drum
+                                    </td>
+                                    <td class="entry-component-label">
+                                        PHD  (hours)
+                                    </td>
+                                    <td>
+                                        Pumping Hours in a Day
+                                    </td>
+                                    <td class="entry-component-label">
+                                        PDM (days)
+                                    </td>
+                                    <td>
+                                        Pumping Days in a Month
+                                    </td>
+                                </tr>
+                            </table>                        
+                        </div>
+
+                    </div>
+                    <h:panelGroup id="pnl_well_data_entry">
+                        <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+                            <p:dialog
+                                header="Well Data Entry" id="dlg_well_data_entry" 
+                                widgetVar="pw_dlg_well_data_entry"
+                                modal="true">                            
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label" align="right">Watershed : </td>
+                                        <td> <h:selectOneMenu id="ddl_wshed" value="#{wellData.ddl_wshed}"
+                                                              valueChangeListener="#{wellData.ddl_wshed_changed}"
+                                                              styleClass="component-width"
+                                                              >
+                                                <f:selectItems value="#{wellData.ddl_wshed_options}"/>
+                                                <p:ajax event="change"
+                                                        process="ddl_wshed"
+                                                        update="ddl_farmer,ddl_srvyno"
+                                                        />
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Farmer :
+                                        </td>
+                                        <td><h:selectOneMenu id="ddl_farmer" value="#{wellData.ddl_farmer}"
+                                                             valueChangeListener="#{wellData.ddl_farmer_changed}"
+                                                             styleClass="component-width"
+                                                             >
+                                                <f:selectItems value="#{wellData.ddl_farmer_options}"/>
+                                                <p:ajax event="change"
+                                                        process="ddl_farmer"
+                                                        update="ddl_srvyno"
+                                                        />
+                                            </h:selectOneMenu> 
+                                        </td>
+                                        <td class="entry-component-label" align="right">Survey No. : 
+                                        </td>
+                                        <td>
+                                            <h:selectOneMenu id="ddl_srvyno" value="#{wellData.ddl_srvyno}"
+                                                             styleClass="component-width"
+                                                             >
+                                                <f:selectItems value="#{wellData.ddl_srvyno_options}"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label" align="right" > Data Collect. Date :
+                                        </td>
+                                        <td> <p:calendar id="cal_colldate" value="#{wellData.cal_colldate}" 
+                                                         readonlyInput="true"
+                                                         navigator="true" pattern="#{GlobalUtilities.dateFormat}"  size="10"/> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > SWL (mts) :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_swl" value="#{wellData.txt_swl}"
+                                                          style="text-align: right"
+                                                          /> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > PWL (mts) :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_pwl" value="#{wellData.txt_pwl}"
+                                                          style="text-align: right"
+                                                          /> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label" align="right" > PT (seconds):
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_ptime" value="#{wellData.txt_ptime}"
+                                                          style="text-align: right"/> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > PHD :
+                                        </td>
+                                        <td><p:calendar value="#{wellData.cal_phrs}" pattern="HH:mm" timeOnly="true" /> 
+
+                                        </td>
+                                        <td class="entry-component-label" align="right" > PDM :
+                                        </td>
+                                        <td> <h:inputText id="txt_pdays" value="#{wellData.txt_pdays}" styleClass="component-width"
+                                                          style="text-align: right"/> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" align="right">
+                                            <p:commandButton id="btn_welldata_create"
+                                                             actionListener="#{wellData.btn_welldata_create}"
+                                                             value="Save"
+                                                             icon="ui-icon-disk"
+                                                             process=":form3a:pnl_well_data_entry"
+                                                             update="growl1,:form3a:pnl_well_data_entry,pnl_tbl_welldata"
+                                                             onclick="if(!validateEntries()){return false;}"
+                                                             rendered="#{!wellData.updateMode}"
+                                                             />
+                                            <p:commandButton id="btn_welldata_edit"
+                                                             actionListener="#{wellData.btn_welldata_edit}"
+                                                             value="Update"                                                             
+                                                             icon="ui-icon-disk"
+                                                             onclick="if(!validateEntries()){return false;}"
+                                                             process=":form3a:pnl_well_data_entry"
+                                                             update="growl1,:form3a:pnl_well_data_entry,pnl_tbl_welldata"
+                                                             rendered="#{wellData.updateMode}"
+                                                             />
+                                        </td>
+                                    </tr>
+                                </table>               
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label">
+                                            SWL
+                                        </td>
+                                        <td>
+                                            Static Water Level
+                                        </td>
+                                        <td class="entry-component-label">
+                                            PWL
+                                        </td>
+                                        <td>
+                                            Pumping Water Level
+                                        </td>
+                                        <td class="entry-component-label">
+                                            PT
+                                        </td>
+                                        <td>
+                                            Pumping Time for filling 100 ltrs drum
+                                        </td>
+                                        <td class="entry-component-label">
+                                            PHD
+                                        </td>
+                                        <td>
+                                            Pumping Hours in a Day
+                                        </td>
+                                        <td class="entry-component-label">
+                                            PDM
+                                        </td>
+                                        <td>
+                                            Pumping Days in a Month
+                                        </td>
+                                    </tr>
+                                    <tr><td colspan="3">
+                                            <div class="error-message"> All fields are mandatory </div>
+                                        </td></tr>
+                                </table>
+
+                            </p:dialog>
+                            <script type="text/javascript">
+                                $('#txt_swl').autoNumeric({aSep: '', dGroup: '', vMin: '0',vMax:'99999999.99',aPad: false});
+                                $('#txt_pwl').autoNumeric({aSep: '', dGroup: '', vMin: '0',vMax:'99999999.99',aPad: false});
+                                $('#txt_ptime').autoNumeric({aSep: '', dGroup: '', vMin: '0',vMax:'99999',aPad: false});
+                                $('#txt_pdays').autoNumeric({aSep: '', dGroup: '', vMin: '0',vMax:'31',aPad: false});
+                            </script>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="head">
+                <script type="text/javascript">
+                    //<![CDATA[
+                    function validateEntries(){
+                        var valid=true;
+                        if(!validateOldPassword()){
+                            valid= false;
+                        }
+                        if(!validateNewPassword()){
+                            valid= false;
+                        }
+                        if(!validateConfirmPassword()){
+                            valid=false;
+                        }
+                        return valid;
+                    }
+                    function validateOldPassword(){
+                        $('#err_txt_old_password').text('');
+                        if($('#tabView1\\:txt_old_password').val()==''){
+                            $('#err_txt_old_password').text('Please enter old password');        
+                            return false;
+                        }
+                        return true;
+                    }
+                    function validateConfirmPassword(){
+                        $('#err_txt_confirm_password').text('');
+                        if($('#tabView1\\:txt_confirm_password').val()==''){
+                            $('#err_txt_confirm_password').text('Please enter confirm password');        
+                            return false;
+                        }
+                        if($('#tabView1\\:txt_new_password').val()!=$('#tabView1\\:txt_confirm_password').val()){
+                            $('#err_txt_confirm_password').text('New password and confirm password does not matched');        
+                            return false;
+                        }
+                        return true;
+                    }
+                    function validateNewPassword(){
+                        $('#err_txt_new_password').text('');
+                        if($('#tabView1\\:txt_new_password').val()==''){
+                            $('#err_txt_new_password').text('Please enter new password');        
+                            return false;
+                        }
+                        if($('#tabView1\\:txt_new_password').val().length<6){
+                            $('#err_txt_new_password').text('Password can not be smaller than 6 characters');        
+                            return false;
+                        }                      
+                        return true;
+                    }
+                    function validateEmail(){
+                        $('#err_txt_email').hide();
+                        if($('#txt_email').val().trim()!=null){                            
+                            var re=/^(\w+[\-\.])*\w+@(\w+\.)+[A-Za-z]+$/;
+                            if(!re.test($('#txt_email').val())){                            
+                                $('#err_txt_email').show();
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        }else{
+                            $('#err_txt_email').show();
+                            return false;
+                        }
+                            
+                    }
+                    
+                    //]]>
+                </script>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form1" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Settings" url="#{Hp_GlobalSettings.brHp_settings}" />                          
+                    </p:breadCrumb>  
+                    <div class="component-margin">
+                        <p:tabView id="tabView1" orientation="left">
+                            <p:tab title="Chage Password">
+                                <h:panelGroup id="pnl_change_password">
+                                    <table class="element-table">
+                                        <tr>
+                                            <td class="entry-component-label">
+                                                User Name:
+                                            </td>
+                                            <td class="entry-component-detail">
+                                                #{GlobalSettings.ent_login_user.userName.toUpperCase()}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="entry-component-label">
+                                                Old Password:<label class="mandatory-text">*</label>
+                                            </td>
+                                            <td>
+                                                <p:password id="txt_old_password"
+                                                            value="#{settings.txt_old_password}"
+                                                            maxlength="16"
+                                                            onchange="validateOldPassword()"/>
+                                                <div class="error-message" id="err_txt_old_password"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="entry-component-label">
+                                                New Password:<label class="mandatory-text">*</label>
+                                            </td>
+                                            <td>
+                                                <p:password feedback="true"
+                                                            maxlength="16"
+                                                            id="txt_new_password"
+                                                            value="#{settings.txt_new_password}"
+                                                            onchange="validateNewPassword()"/>
+                                                <div class="error-message" id="err_txt_new_password"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="entry-component-label">
+                                                Confirm Password:<label class="mandatory-text">*</label>
+                                            </td>
+                                            <td>
+                                                <p:password
+                                                    id="txt_confirm_password"
+                                                    maxlength="16"
+                                                    value="#{settings.txt_confirm_password}"
+                                                    onchange="validateConfirmPassword()"                                                    
+                                                    />
+                                                <div class="error-message" id="err_txt_confirm_password"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+
+                                            </td>
+                                            <td>
+                                                <p:commandButton value="Change Password"
+                                                                 icon="ui-icon-key"
+                                                                 actionListener="#{settings.changePassword}"
+                                                                 onclick="if(!validateEntries()){return false;}"
+                                                                 process="pnl_change_password"
+                                                                 update="pnl_change_password,:form1:growl1"/>                                  
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </h:panelGroup>
+                            </p:tab>
+                        </p:tabView>
+                    </div>
+                    <p:growl id="growl1" showDetail="true" sticky="true"/>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,284 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker  ,.component-width,.component-width select{
+                        width:200px;
+                        max-width: 200px;
+                        max-height:100px;
+                    }
+                </style>
+                <script type="text/javascript">
+                    //<![CDATA[
+                    function validateEntries(){
+                        var valid=true;
+                        if(!validateNewPassword()){
+                            valid= false;
+                        }
+                        if(!validateConfirmPassword()){
+                            valid=false;
+                        }
+                        return valid;
+                    }
+                  
+                    function validateConfirmPassword(){
+                        $('#err_txt_confirm_password').text('');
+                        if($('#txt_confirm_password').val()==''){
+                            $('#err_txt_confirm_password').text('Please enter confirm password');        
+                            return false;
+                        }
+                        if($('#txt_new_password').val()!=$('#txt_confirm_password').val()){
+                            $('#err_txt_confirm_password').text('New password and confirm password does not matched');        
+                            return false;
+                        }
+                        return true;
+                    }
+                    function validateNewPassword(){
+                        $('#err_txt_new_password').text('');
+                        if($('#txt_new_password').val()==''){
+                            $('#err_txt_new_password').text('Please enter new password');        
+                            return false;
+                        }                                             
+                        return true;
+                    }
+                   function validateUEntries(){
+                        var valid=true;
+                        if(!validateUName()){
+                            valid= false;
+                        }
+                        if(!validateUNewPassword()){
+                            valid= false;
+                        }
+                        if(!validateUConfirmPassword()){
+                            valid=false;
+                        }
+                        return valid;
+                    }
+                  
+                    function validateUConfirmPassword(){
+                        $('#err_txt_confirm_upassword').text('');
+                        if($('#txt_confirm_upassword').val()==''){
+                            $('#err_txt_confirm_upassword').text('Please enter confirm password');        
+                            return false;
+                        }
+                        if($('#txt_upassword')  .val()!=$('#txt_confirm_upassword').val()){
+                            $('#err_txt_confirm_upassword').text('New password and confirm password does not matched');        
+                            return false;
+                        }
+                        return true;
+                    }
+                    function validateUNewPassword(){
+                        $('#err_txt_upassword').text('');
+                        if($('#txt_upassword').val()==''){
+                            $('#err_txt_upassword').text('Please enter password');        
+                            return false;
+                        }                                             
+                        return true;
+                    }
+                      function validateUName(){
+                        $('#err_txt_uname').text('');
+                        if($('#txt_uname').val()==''){
+                            $('#err_txt_uname').text('Please enter User Name');        
+                            return false;
+                        }                                             
+                        return true;
+                    }
+                    
+                    //]]>
+                </script>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form6" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Masters" url="#{Hp_GlobalSettings.brHp_mst}" />                          
+                        <p:menuitem value="User" url="#" />  
+                    </p:breadCrumb>  
+                    <div>
+                        <h:panelGroup id="pnl_users">
+
+                            <p:dataTable 
+                                id="tbl_users"
+                                var="users"  value="#{usermst.tbl_usermst_list}"
+                                filteredValue="#{usermst.tbl_usermst_list_filtered}"
+                                filterDelay="300"
+                                paginator="true"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                rowsPerPageTemplate="5,10,15,20"
+                                paginatorPosition="top"
+                                rows="5"
+                                styleClass="component-margin ui-datatable-hor-scroll">  
+                                <f:facet name="header">  
+                                    User Detail
+                                </f:facet>
+                                <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:column  headerText="User Name" 
+                                           sortBy="#{users.userName}"
+                                           filterBy="#{users.userName}"
+                                           filterMatchMode="contains"
+                                           >  
+                                    #{users.userName}
+                                </p:column>
+                                <p:column  headerText="User Type" 
+                                           sortBy="#{users.userType}"
+                                           filterBy="#{users.userType}"
+                                           filterMatchMode="contains"
+                                           >  
+                                    <h:outputText value="RSO Member" rendered="#{users.userType=='R'}"/>
+                                    <h:outputText value="PFA Member" rendered="#{users.userType=='P'}"/>
+                                </p:column>
+                                <p:column  headerText="PFA" 
+                                           sortBy="#{users.pfaRsoNumber.pfaName}"
+                                           filterBy="#{users.pfaRsoNumber.pfaName}"
+                                           filterMatchMode="contains"
+                                           > 
+                                    #{users.pfaRsoNumber.pfaName}
+                                </p:column> 
+                                <p:column style="width: 20px;#{GlobalSettings.ent_login_user.pfaRsoNumber==null?'':'display:none'}">
+                                    <f:facet name="header">
+                                        <center>
+                                            <span class="ui-icon ui-icon-pencil"/>
+                                        </center>
+                                    </f:facet>
+                                    <p:commandButton icon="ui-icon-pencil"
+                                                     process=":form6:pnl_users"
+                                                     update=":form6:pnl_change_password"
+                                                     oncomplete="pw_dlg_change_password.show();"
+                                                     title="Change Password"
+                                                     >
+                                        <f:setPropertyActionListener
+                                            value="#{users}"
+                                            target="#{usermst.ent_UserMst}"/>
+
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber==null}">
+                            <p:panel header="User Entry" id="pnl_user_entry" styleClass="component-margin" toggleable="true">
+
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label" align="right" > User Name :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_uname" value="#{usermst.txt_uname}"
+                                                          onchange="validateUName()"
+                                                          style="text-transform: uppercase"/> 
+                                            <div class="error-message" id="err_txt_uname"/>
+                                        </td>
+                                        <td class="entry-component-label" align="right">User Type : 
+                                        </td>
+                                        
+                                        <td>
+                                            <h:selectOneMenu id="ddl_utype" value="#{usermst.ddl_utype}" styleClass="component-width"
+                                                             onchange="if($('#ddl_utype').val()=='R'){$('.pfa-entry').hide()}else{$('.pfa-entry').show()}">
+                                                <f:selectItem itemValue="R" itemLabel="RSO Member"/>
+                                                <f:selectItem itemValue="P" itemLabel="PFA Member"/>
+                                            </h:selectOneMenu> 
+                                        </td>
+                                        <td class="entry-component-label pfa-entry" align="right" >
+                                            <h:outputText value="PFA Name :"/>
+                                        </td>
+                                        <td class="pfa-entry"> 
+                                            <h:selectOneMenu id="ddl_pfa" value="#{usermst.ddl_pfa}"
+                                                             styleClass="component-width"
+                                                             >
+                                                <f:selectItems value="#{usermst.ddl_pfa_options}"/>
+                                            </h:selectOneMenu>
+                                            <script type="text/javascript">
+                                                $('.pfa-entry').hide()
+                                            </script>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label" align="right"  valign="top"> User Password :
+                                        </td>
+                                        <td valign="top"> <h:inputSecret styleClass="component-width" id="txt_upassword" value="#{usermst.txt_upassword}"
+                                                            onchange="validateUNewPassword()"
+                                                            /> 
+                                            <div class="error-message" id="err_txt_upassword"/>
+                                        </td>
+                                        <td class="entry-component-label" align="right" valign="top"> Confirm Password :
+                                        </td>
+                                        <td valign="top" > <h:inputSecret styleClass="component-width" id="txt_confirm_upassword" value="#{usermst.txt_confirm_upassword}"
+                                                            onblur="validateUConfirmPassword()"
+                                                            /> 
+                                            <div class="error-message" id="err_txt_confirm_upassword"/>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" align="right">
+                                            <p:commandButton id="btn_user_create"
+                                                             actionListener="#{usermst.btn_user_create}"
+                                                             onclick="if(!validateUEntries()){return false;}"
+                                                             value="Save"
+                                                             icon="ui-icon-disk"
+                                                             process="pnl_user_entry"
+                                                             update="growl1,pnl_user_entry,pnl_users"
+
+                                                             />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p:panel>
+                        </h:panelGroup>
+                        <p:dialog id="dlg_change_password"
+                                  widgetVar="pw_dlg_change_password"
+                                  header="Change Password"
+                                  modal="true">
+                            <h:panelGroup id="pnl_change_password">
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label">New Password : </td>
+                                        <td><p:password id="txt_new_password"
+                                                        value="#{usermst.txt_new_password}"/>
+                                            <div class="error-message" id="err_txt_new_password"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label">Confirm Password : </td>
+                                        <td><p:password id="txt_confirm_password"
+                                                        value="#{usermst.txt_confirm_password}"/>
+                                            <div class="error-message" id="err_txt_confirm_password"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td/>
+                                        <td>
+                                            <p:commandButton icon="ui-icon-disk"
+                                                             value="Change Password"
+                                                             process="pnl_change_password"
+                                                             update="growl1"
+                                                             onclick="if(!validateEntries()){return false;}"
+                                                             oncomplete="pw_dlg_change_password.hide();"
+                                                             actionListener="#{usermst.changePassword}"
+                                                             />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </h:panelGroup>
+                        </p:dialog>
+                    </div>
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,256 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker  ,.component-width,.component-width select{
+                        width:150px;
+                        max-width: 150px;
+                        max-height:100px;
+                    }
+                </style>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form4" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Masters" url="#{Hp_GlobalSettings.brHp_mst}" />                          
+                        <p:menuitem value="Observation Well" url="#" />  
+                    </p:breadCrumb>  
+                    <div>
+                        <h:panelGroup id="pnl_tbl_plot">
+
+                            <p:dataTable 
+                                id="tbl_plot"
+                                var="plot"  value="#{plotdet.tbl_plot_list}"
+                                filteredValue="#{plotdet.tbl_plot_list_filtered}"
+                                filterDelay="300"
+                                paginator="true"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                rowsPerPageTemplate="5,10,15,20"
+                                paginatorPosition="top"
+                                rows="5"
+                                editable="true"
+                                styleClass="component-margin ui-datatable-hor-scroll">  
+                                <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <f:facet name="header">  
+                                    Plot Details
+                                </f:facet>
+
+                                <p:ajax event="rowEdit" listener="#{plotdet.plotEdit}"  update="@this"/> 
+
+                                <p:column style="width: 65px" headerText="Watershed Name" 
+                                          sortBy="#{plot.plotWshedNo.wshedName}"
+                                          filterBy="#{plot.plotWshedNo.wshedName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{plot.plotWshedNo.wshedName}
+                                </p:column>
+                                <p:column style="text-align: center" headerText="Farmer Name">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{plot.plotFarmer}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_plotFarmer" value="#{plot.plotFarmer}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="text-align: center" headerText="Soil Type">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{plot.plotSoiltype}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu id="ddl_stype" value="#{plot.plotSoiltype}" styleClass="component-width">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItem itemValue="SOFT" itemLabel="Soft"/>
+                                                <f:selectItem itemValue="HARD" itemLabel="Hard"/>
+                                            </h:selectOneMenu>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="text-align: center" headerText="Survey No">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{plot.plotSurveyNo}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_plotSurveyNo" value="#{plot.plotSurveyNo}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="text-align: center" headerText="Plot Location">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{plot.plotLocation}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu id="ddl_ploc" value="#{plot.plotLocation}" styleClass="component-width">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItem itemValue="TREATED AREA" itemLabel="Treated Area"/>
+                                                <f:selectItem itemValue="UN-TREATED AREA" itemLabel="Un-Treated Area"/>
+                                            </h:selectOneMenu>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="text-align: center" headerText="Lat./GPS North">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{plot.plotGpsn}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_plotGpsn" value="#{plot.plotGpsn}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="text-align: center" headerText="Lat./GPS East">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{plot.plotGpse}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_plotGpse" value="#{plot.plotGpse}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="text-align: center" headerText="Plot Elevation (in feet)">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{plot.plotElevation}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_plotElevation" value="#{plot.plotElevation}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="width:60px">  
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-pencil"/>
+                                    </f:facet>
+                                    <p:rowEditor />  
+                                </p:column>  
+
+                                <p:column style="width:20px">
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-trash"/>
+                                    </f:facet>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     process=":form4:pnl_tbl_plot"
+                                                     update=":form4:pnl_tbl_plot">
+                                        <f:setPropertyActionListener
+                                            value="#{plot}"
+                                            target="#{plotdet.ent_plot_remove}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:panelGroup>
+
+                    </div>
+
+                    <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+                        <p:panel header="Plot Entry" id="pnl_plot_entry" styleClass="component-margin" toggleable="true">
+                            <div class="scrolling-div">
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label" align="right">Watershed : </td>
+                                        <td> <h:selectOneMenu id="ddl_wshed" value="#{plotdet.ddl_wshed}"
+                                                              styleClass="component-width"
+                                                              >
+                                                <f:selectItems value="#{plotdet.ddl_wshed_options}"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Farmer Name :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_pfarmer" value="#{plotdet.txt_pfarmer}"
+                                                          style="text-transform: uppercase"/> 
+                                        </td>
+
+                                        <td class="entry-component-label" align="right">Soil Type : 
+                                        </td>
+                                        <td>
+                                            <h:selectOneMenu id="ddl_stype" value="#{plotdet.ddl_stype}" styleClass="component-width">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItem itemValue="SOFT" itemLabel="Soft"/>
+                                                <f:selectItem itemValue="HARD" itemLabel="Hard"/>
+                                            </h:selectOneMenu> 
+                                        </td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label" align="right" > Plot Survey No :
+                                        </td>
+                                        <td> <h:inputText id="txt_surveyno" value="#{plotdet.txt_surveyno}" styleClass="component-width"/> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Plot Location:
+                                        </td>
+                                        <td> <h:selectOneMenu id="ddl_ploc" value="#{plotdet.ddl_ploc}" styleClass="component-width">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItem itemValue="TREATED AREA" itemLabel="Treated Area"/>
+                                                <f:selectItem itemValue="UN-TREATED AREA" itemLabel="Un-Treated Area"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Elevation (in feet):
+                                        </td>
+                                        <td> <h:inputText id="txt_pelevate" value="#{plotdet.txt_pelevate}" styleClass="component-width"/> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+
+                                        <td class="entry-component-label" align="right" > Lat./GPS North:
+                                        </td>
+                                        <td> <h:inputText id="txt_gpsn" value="#{plotdet.txt_gpsn}" styleClass="component-width"/> 
+                                        </td>
+
+                                        <td class="entry-component-label" align="right" > Long./GPS East:
+                                        </td>
+                                        <td> <h:inputText id="txt_gpse" value="#{plotdet.txt_gpse}" styleClass="component-width"/> 
+                                        </td>
+                                        <td colspan="2" align="right">
+                                            <p:commandButton id="btn_plot_create"
+                                                             actionListener="#{plotdet.btn_plot_create}"
+                                                             value="Save"
+                                                             icon="ui-icon-disk"
+                                                             process="pnl_plot_entry"
+                                                             update="growl1,pnl_plot_entry,pnl_tbl_plot"
+
+                                                             />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </p:panel>
+                    </h:panelGroup>
+
+
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

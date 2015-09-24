@@ -1,0 +1,253 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker  ,.component-width,.component-width select{
+                        width:150px;
+                        max-width: 150px;
+                        max-height:100px;
+                    }
+                </style>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form5" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Masters" url="#{Hp_GlobalSettings.brHp_mst}" />                          
+                        <p:menuitem value="Stream Gauge" url="#" />  
+                    </p:breadCrumb>  
+
+                    <div>
+                        <h:panelGroup id="pnl_tbl_stream">
+
+                            <p:dataTable 
+                                id="tbl_stream"
+                                var="stream"  value="#{streamgauge.tbl_streamg_list}"
+                                filteredValue="#{streamgauge.tbl_streamg_list_filtered}"
+                                filterDelay="300"
+                                paginator="true"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                rowsPerPageTemplate="5,10,15,20"
+                                paginatorPosition="top"
+                                rows="5"
+                                editable="true"
+                                styleClass="component-margin ui-datatable-hor-scroll">  
+                                <f:facet name="header">  
+                                    Stream Gauge Details
+                                </f:facet>
+                                <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="rowEdit" listener="#{streamgauge.streamEdit}"  update="@this"/> 
+
+                                <p:column style="width: 65px" headerText="Watershed Name" 
+                                          sortBy="#{stream.wtrWshedMst.wshedName}"
+                                          filterBy="#{stream.wtrWshedMst.wshedName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{stream.wtrWshedMst.wshedName}
+                                </p:column>
+                                <p:column style="text-align: center" headerText="Stream Name">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{stream.strName}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_strName" value="#{stream.strName}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+                                <p:column style="text-align: center" headerText="Check Dam Height (in cm)">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{stream.strCheckdamHeight}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_strCheckdamHeight" value="#{stream.strCheckdamHeight}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="width: 65px" headerText="Filling Level (in cm)"> 
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{stream.strFillingLevel}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText id="txt_strFillingLevel" value="#{stream.strFillingLevel}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>    
+
+                                <p:column style="width: 65px" headerText="Dam Length (in cm)">  
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{stream.strDamLength}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText id="txt_strDamLength" value="#{stream.strDamLength}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column> 
+
+                                <p:column style="width: 65px" headerText="Location">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{stream.strLocation}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText id="txt_strLocation" value="#{stream.strLocation}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column> 
+
+                                <p:column style="width: 65px" headerText="Lat./GPS North">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{stream.strGpsn}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText id="txt_strGpsn" value="#{stream.strGpsn}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column style="width: 65px" headerText="Lat./GPS East">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{stream.strGpse}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText id="txt_strGpse" value="#{stream.strGpse}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style="width: 65px" headerText="Plot Elevation (in feet)">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{stream.strElevation}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText id="txt_strElevation" value="#{stream.strElevation}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style="width:60px">  
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-pencil"/>
+                                    </f:facet>
+                                    <p:rowEditor />  
+                                </p:column>  
+                                <p:column style="width:20px">
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-trash"/>
+                                    </f:facet>
+
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     process=":form5:pnl_tbl_stream"
+                                                     update=":form5:pnl_tbl_stream">
+                                        <f:setPropertyActionListener
+                                            value="#{stream}"
+                                            target="#{streamgauge.ent_stream_remove}"/>
+                                    </p:commandButton>
+
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:panelGroup>
+
+                    </div>
+                    
+                    <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+                        <p:panel header="Stream Gauge Entry" id="pnl_stream_entry" styleClass="component-margin" toggleable="true">
+                            <div class="scrolling-div">
+                            <table class="element-table">
+                                <tr>
+                                    <td class="entry-component-label" align="right">Watershed : </td>
+                                    <td> <h:selectOneMenu id="ddl_wshed" value="#{streamgauge.ddl_wshed}"
+                                                          styleClass="component-width"
+                                                          >
+                                            <f:selectItems value="#{streamgauge.ddl_wshed_options}"/>
+                                        </h:selectOneMenu>
+                                    </td>
+                                    <td class="entry-component-label" align="right" > Stream Name :
+                                    </td>
+                                    <td> <h:inputText styleClass="component-width" id="txt_strname" value="#{streamgauge.txt_strname}"
+                                                      style="text-transform: uppercase"/> 
+                                    </td>
+
+                                    <td class="entry-component-label" align="right">Check Dam Height (in cm): 
+                                    </td>
+                                    <td> <h:inputText styleClass="component-width" id="txt_damheight" value="#{streamgauge.txt_damheight}"
+                                                      style="text-transform: uppercase"/> 
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="entry-component-label" align="right" > Filling Level (in cm):
+                                    </td>
+                                    <td> <h:inputText id="txt_fillevel" value="#{streamgauge.txt_fillevel}" styleClass="component-width"/> 
+                                    </td>
+                                    <td class="entry-component-label" align="right" > Main Dam length (in cm):
+                                    </td>
+                                    <td> <h:inputText id="txt_damlen" value="#{streamgauge.txt_damlen}" styleClass="component-width"/> 
+                                    </td>
+                                    <td class="entry-component-label" align="right" > Elevation (in feet):
+                                    </td>
+                                    <td> <h:inputText id="txt_selevate" value="#{streamgauge.txt_selevate}" styleClass="component-width"/> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="entry-component-label" align="right" > Location :
+                                    </td>
+                                    <td> <h:inputText id="txt_strloc" value="#{streamgauge.txt_strloc}" styleClass="component-width"
+                                                      style="text-transform: uppercase"/> 
+                                    </td>
+                                    <td class="entry-component-label" align="right" > Lat./GPS North:
+                                    </td>
+                                    <td> <h:inputText id="txt_gpsn" value="#{streamgauge.txt_gpsn}" styleClass="component-width"/> 
+                                    </td>
+                                    <td class="entry-component-label" align="right" > Long./GPS East:
+                                    </td>
+                                    <td> <h:inputText id="txt_gpse" value="#{streamgauge.txt_gpse}" styleClass="component-width"/> 
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td colspan="6" align="right">
+                                        <p:commandButton id="btn_plot_create"
+                                                         actionListener="#{streamgauge.btn_stream_create}"
+                                                         value="Save"
+                                                         icon="ui-icon-disk"
+                                                         process="pnl_stream_entry"
+                                                         update="growl1,pnl_stream_entry,pnl_tbl_stream"
+
+                                                         />
+                                    </td>
+                                </tr>
+                            </table>
+                            </div>
+                        </p:panel>
+                    </h:panelGroup>
+
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

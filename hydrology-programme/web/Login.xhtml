@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./template-general.xhtml">
+
+            <ui:define name="head">
+                <script type="text/javascript">
+                    function CheckEmpty(){
+                        var valid=true;
+                        if($('#username').val().trim()=='' || $('#pwd').val().trim()==''){
+                            SetAndShowDialog('GeneralDialog','User Id/Password is blank','User Id/Password can not be blank');
+                            valid=false;
+                        }
+                        return valid;
+                    }
+                </script>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+                <img src="https://database.fes.org.in/web-resources/staff-scheduling/images/icons/login_icon_60x40.png"  alt="login_icon"/>
+                <div>Login</div>
+            </ui:define>
+
+            <ui:define name="content">
+                <center class="component-margin">
+                    <table width="85%" border="0">
+                        <tr>
+                            <td colspan="3">
+                                <div align="left">
+                                    <br/>
+                                    <div align="left" style="font-size:20px;margin-left:0px;background: none;border: none" class="ui-state-default">
+                                        Hydrology Programme
+                                    #{Login.txt}</div>
+                                    <p:separator/>
+                                    <br/>                                    
+                                </div>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td align="left" width="10px">
+                                <br/><br/>
+                                <p:panel header="Enter User Name/Password" style="width:400px;">
+                                    <form action="j_security_check" method="POST">
+                                        <table cellpadding="8px"  border="0" width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td  align="left" width="20px">
+                                                        <span class="entry-component-label" >User Name:</span>
+                                                    </td>
+                                                    <td align="left">
+                                                        <input id="username" type="text" name="j_username" value="" size="16" style="width:250px"
+                                                               class="ui-inputfield ui-inputtextarea ui-widget ui-state-default ui-corner-all"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td  align="left">
+                                                        <span class="entry-component-label" >Password:</span>
+                                                    </td>
+                                                    <td align="left">
+                                                        <input id="pwd" type="password" name="j_password" value="" size="16" style="width:250px"
+                                                               class="ui-inputfield ui-inputtextarea ui-widget ui-state-default ui-corner-all"/>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td ></td>
+                                                    <td align="left">
+                                                        <button type="submit" value="Login " onclick="if(!CheckEmpty()){return false};$('#username').val($('#username').val().toUpperCase())"
+                                                                id="btn_login"
+                                                                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left">
+                                                            <span class="ui-button-icon-left ui-icon ui-icon-key"/>
+                                                            <span class="ui-button-text">Login</span>
+                                                        </button>
+                                                        <br/>
+                                                        <br/>
+                                                        <script type="text/javascript">
+                                                            $('#btn_login').mouseover(function() {
+                                                                $(this).removeClass('ui-state-default');
+                                                                $(this).addClass('ui-state-hover');
+                                                            });
+                                                            $('#btn_login').mouseout(function(){
+                                                                $(this).addClass('ui-state-default');
+                                                                $(this).removeClass('ui-state-hover');
+                                                            })
+                                                        </script>
+
+                                                    </td>
+                                                </tr>
+                                              
+                                            </tbody>
+                                        </table>
+
+                                    </form>
+
+                                </p:panel>
+                                <br/><br/>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

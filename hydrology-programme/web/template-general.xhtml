@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Hydrology Programme</title>      
+        <link rel="SHORTCUT ICON" href="#{GlobalResources.rsc_title_icon}"/>
+        <f:facet name="first">        
+            <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+            <meta content="text/html; charset=UTF-8" http-equiv="#{GlobalResources.content_type}"/>                                                
+            <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_skin}"/>               
+        </f:facet>                         
+        <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_skin_general_customised}"/>
+        <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_fes_layout}"/> 
+        <link type="text/css" rel="stylesheet" href="#{GlobalResources.rsc_css_fes_layout_skin}"/> 
+        <script type="text/javascript"  src="#{GlobalResources.rsc_js_utilities}"/>
+        <script type="text/javascript"  src="#{GlobalResources.rsc_js_browser_detect}"/>                
+        <style type="text/css">            
+            .ui-widget,html,input, textarea, keygen, select,button{font-family:Verdana,Arial,sans-serif;font-size:11px;}
+            
+        </style>
+        <ui:insert name="head"></ui:insert>      
+    </h:head>
+    <h:body>        
+        <div class="header header-customisation">
+            <div class="current-page-icon-container" >                
+                <ui:insert name="page_header_icon">
+
+                </ui:insert>
+
+            </div>
+
+        </div>
+        <div class="container" align="center">                        
+            <div class="header-padding"/>
+            <div style="width: 80%;min-width: 900px;" align="left">
+                <h:form id="utility_form" prependId="false">
+                    <script type="text/javascript">
+                        var hp_trans_succeed=false;
+                    </script>
+                    <div align="left">
+                        <h:panelGroup id="pnl_GeneralDialog">
+                            <p:dialog  header="#{GlobalUtilities.out_GeneralDialog_header}" 
+                                       widgetVar="pw_GeneralDialog"
+                                       modal="true"
+                                       hideEffect="#{GlobalResources.generalDialog_show}"
+                                       showEffect="#{GlobalResources.generalDialog_hide}"
+                                       id="GeneralDialog" 
+                                       >
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <h:outputText id="out_GeneralDialog"
+                                                  value="#{GlobalUtilities.out_GeneralDialog_detail}" />
+                                </h:panelGrid>
+                            </p:dialog>            
+                        </h:panelGroup>
+                    </div>                       
+                </h:form>    
+                <ui:insert name="content">
+
+                </ui:insert>
+
+                <div class="footer-padding"/>
+            </div>
+        </div>
+        <div align="center" class="footer" >Created By                
+            <a href="http://www.fes.org.in/" target="_blank">Foundation For Ecological Security</a>                
+        </div>
+    </h:body>
+</html>
+

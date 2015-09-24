@@ -1,0 +1,308 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker  ,.component-width,.component-width select{
+                        width:150px;
+                        max-width: 150px;
+                        max-height:100px;
+                    }
+                </style>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form3" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Masters" url="#{Hp_GlobalSettings.brHp_mst}" />                          
+                        <p:menuitem value="Observation Well" url="#" />  
+                    </p:breadCrumb>  
+                    <div>
+                        <h:panelGroup id="pnl_tbl_obwell">
+
+                            <p:dataTable 
+                                id="tbl_obwell"
+                                var="obwell"  value="#{observwell.tbl_obwell_list}"
+                                filteredValue="#{observwell.tbl_obwell_list_filtered}"
+                                filterDelay="300"
+                                paginator="true"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                rowsPerPageTemplate="5,10,15,20"
+                                paginatorPosition="top"
+                                rows="5"
+                                editable="true"
+                                styleClass="component-margin ui-datatable-hor-scroll">  
+                                <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <f:facet name="header">  
+                                    Observation Well Master 
+                                </f:facet>
+
+                                <p:ajax event="rowEdit" listener="#{observwell.obwellEdit}"  update="@this"/> 
+
+                                <p:column style="width: 65px" headerText="Watershed Name" 
+                                          sortBy="#{obwell.obwellWshedNo.wshedName}"
+                                          filterBy="#{obwell.obwellWshedNo.wshedName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{obwell.obwellWshedNo.wshedName}
+                                </p:column>  
+                                <p:column style="width: 65px" headerText="Farmer Name"> 
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellFarmer}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellFarmer}"/>
+                                        </f:facet>  
+                                    </p:cellEditor> 
+                                </p:column> 
+
+                                <p:column style="width: 65px" headerText="Well Type">
+                                    <p:cellEditor>  
+                                        <f:facet name="output"> 
+                                            <h:outputText value="" rendered="#{obwell.obwellType==''}"/>
+                                            <h:outputText value="Open Well" rendered="#{obwell.obwellType=='O'}"/>
+                                            <h:outputText value="Bore Well" rendered="#{obwell.obwellType=='B'}"/>
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu value="#{obwell.obwellType}" styleClass="component-width">
+                                                <f:selectItem itemValue="O" itemLabel="Open Well"/>
+                                                <f:selectItem itemValue="B" itemLabel="Bore Well"/>
+                                            </h:selectOneMenu> 
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style="width: 65px" headerText="Drill Year">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellDrillYear}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellDrillYear}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>       
+                                </p:column> 
+                                <p:column style="width: 65px" headerText="Well Number">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellNumber}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellNumber}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+                                <p:column style="width: 65px" headerText="Well Depth (in feet)">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellDepth}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellDepth}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+                                <p:column style="width: 65px" headerText="Well Location">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellLocation}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellLocation}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+                                <p:column style="width: 65px" headerText="Gauge GPS North">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellGpsn}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellGpsn}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style="width: 65px" headerText="Gauge GPS East">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellGpse}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellGpse}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style="width: 65px" headerText="Elevation (in feet)">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellElevation}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellElevation}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+                                <p:column style="width: 65px" headerText="Pump capacity (HP)">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellMotorCapacity}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellMotorCapacity}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+                                <p:column style="width: 65px" headerText="Pump capacity (stages)">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{obwell.obwellStages}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText  value="#{obwell.obwellStages}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style="width:60px">  
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-pencil"/>
+                                    </f:facet>
+                                    <p:rowEditor />  
+                                </p:column>  
+                                <p:column style="width:20px">
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-trash"/>
+                                    </f:facet>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     process=":form3:pnl_tbl_obwell"
+                                                     update=":form3:pnl_tbl_obwell">
+                                        <f:setPropertyActionListener
+                                            value="#{obwell}"
+                                            target="#{observwell.ent_obwell_remove}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:panelGroup>
+                    </div>
+                    <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+                        <p:panel header="Observation Well Entry" id="pnl_obwell_entry" styleClass="component-margin" toggleable="true">
+                            <div class="scrolling-div">
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label" align="right">Watershed : </td>
+                                        <td> <h:selectOneMenu id="ddl_wshed" value="#{observwell.ddl_wshed}"
+                                                              styleClass="component-width"
+                                                              >
+                                                <f:selectItems value="#{observwell.ddl_wshed_options}"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Farmer :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_ofarmer" value="#{observwell.txt_ofarmer}"
+                                                          style="text-transform: uppercase"/> 
+                                        </td>
+                                        <td class="entry-component-label" align="right">Well Type : 
+                                        </td>
+                                        <td>
+                                            <h:selectOneMenu id="ddl_wtype" value="#{observwell.ddl_wtype}" styleClass="component-width">
+                                                <f:selectItem itemValue="O" itemLabel="Open Well"/>
+                                                <f:selectItem itemValue="B" itemLabel="Bore Well"/>
+                                            </h:selectOneMenu> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label" align="right" > Drill Year :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_drilyear" value="#{observwell.txt_drilyear}"
+                                                          /> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Depth (in feet):
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_depth" value="#{observwell.txt_depth}"
+                                                          /> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Well Number :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_wnumber" value="#{observwell.txt_wnumber}"
+                                                          style="text-transform: uppercase"/> 
+                                        </td>
+
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <td class="entry-component-label" align="right" > Well Location:
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_wlocation" value="#{observwell.txt_wlocation}"
+                                                          style="text-transform: uppercase"/> 
+                                        </td>
+
+                                        <td class="entry-component-label" align="right" > Lat./GPS North:
+                                        </td>
+                                        <td> <h:inputText id="txt_gpsn" value="#{observwell.txt_gpsn}" styleClass="component-width"/> 
+                                        </td>
+
+                                        <td class="entry-component-label" align="right" > Long./GPS East:
+                                        </td>
+                                        <td> <h:inputText id="txt_gpse" value="#{observwell.txt_gpse}" styleClass="component-width"/> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label" align="right" > Elevation (in feet) :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_pelevate" value="#{observwell.txt_pelevate}"
+                                                          /> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Pump capacity (HP) :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_pumphp" value="#{observwell.txt_pumphp}"
+                                                          /> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Pump capacity (stages) :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_pumpstage" value="#{observwell.txt_pumpstage}"
+                                                          /> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+
+                                        <td colspan="6" align="right">
+                                            <p:commandButton id="btn_obwell_create"
+                                                             actionListener="#{observwell.btn_obwell_create}"
+                                                             value="Save"
+                                                             icon="ui-icon-disk"
+                                                             process="pnl_obwell_entry"
+                                                             update="growl1,pnl_obwell_entry,pnl_tbl_obwell"
+
+                                                             />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </p:panel>
+                    </h:panelGroup>
+
+
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

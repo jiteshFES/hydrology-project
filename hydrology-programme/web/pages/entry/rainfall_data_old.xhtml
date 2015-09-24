@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    td .right-text div{
+                        text-align: right;                        
+                    }
+
+                </style>
+                <script type="text/javascript">
+                    function setTableColumnTitle(){
+                        
+                    }
+                </script>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+                
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form1" prependId="false">
+                    <div class="component-margin">
+                        <table class="element-table">
+                            <tr>
+                                <td class="entry-component-label" >Month:</td>
+                                <td>
+                                    <p:selectOneMenu id="ddl_month" value="#{rainfall_data_old.ddl_month}"
+                                                     valueChangeListener="#{rainfall_data_old.ddl_month_changed}">
+                                        <f:selectItem itemLabel="January" itemValue="1" />
+                                        <f:selectItem itemLabel="February" itemValue="2" />
+                                        <f:selectItem itemLabel="March" itemValue="3" />
+                                        <f:selectItem itemLabel="April" itemValue="4" />
+                                        <f:selectItem itemLabel="May" itemValue="5" />
+                                        <f:selectItem itemLabel="June" itemValue="6" />
+                                        <f:selectItem itemLabel="July" itemValue="7" />
+                                        <f:selectItem itemLabel="August" itemValue="8" />
+                                        <f:selectItem itemLabel="September" itemValue="9" />
+                                        <f:selectItem itemLabel="October" itemValue="10" />
+                                        <f:selectItem itemLabel="November" itemValue="11" />
+                                        <f:selectItem itemLabel="December" itemValue="12" />                       
+                                        <p:ajax process="ddl_month"
+                                                update="pnl_tbl_month_wise_entry"/>
+                                    </p:selectOneMenu>
+                                </td>
+                                <td class="entry-component-label">
+                                    Year:
+                                </td>
+                                <td>
+                                    <p:selectOneMenu id="ddl_year" value="#{rainfall_data_old.ddl_year}">
+                                        <f:selectItems value="#{rainfall_data_old.ddl_year_options}"/>
+                                    </p:selectOneMenu>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="component-margin" style="padding-bottom:20px;padding-right:20px">
+                        <h:panelGroup id="pnl_tbl_month_wise_entry">
+                            <p:dataTable 
+                                id="tbl_month_wise_entry"
+                                value="#{rainfall_data_old.tbl_month_wise_entry}"
+                                var="item">                                
+                                <p:column styleClass="ui-state-default" headerText="Date">                                
+                                    <h:outputText value="Rain Fall in mm" />
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="1">                                
+                                    <p:inputText value="#{item.rowData.get(0).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="2">
+                                    <p:inputText value="#{item.rowData.get(1).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="3">
+                                    <p:inputText value="#{item.rowData.get(2).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="4">
+                                    <p:inputText value="#{item.rowData.get(3).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="5">
+                                    <p:inputText value="#{item.rowData.get(4).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="6">
+                                    <p:inputText value="#{item.rowData.get(5).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="7">
+                                    <p:inputText value="#{item.rowData.get(6).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="8">
+                                    <p:inputText value="#{item.rowData.get(7).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text" headerText="9">
+                                    <p:inputText value="#{item.rowData.get(8).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="10">
+                                    <p:inputText value="#{item.rowData.get(9).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="11">
+                                    <p:inputText value="#{item.rowData.get(10).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="12">
+                                    <p:inputText value="#{item.rowData.get(11).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="13">
+                                    <p:inputText value="#{item.rowData.get(12).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="14">
+                                    <p:inputText value="#{item.rowData.get(13).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="15">
+                                    <p:inputText value="#{item.rowData.get(14).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="16">
+                                    <p:inputText value="#{item.rowData.get(15).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="17">
+                                    <p:inputText value="#{item.rowData.get(16).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="18">
+                                    <p:inputText value="#{item.rowData.get(17).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="19">
+                                    <p:inputText value="#{item.rowData.get(18).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="20">
+                                    <p:inputText value="#{item.rowData.get(19).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="21">
+                                    <p:inputText value="#{item.rowData.get(20).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="22">
+                                    <p:inputText value="#{item.rowData.get(21).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="23">
+                                    <p:inputText value="#{item.rowData.get(22).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="24">
+                                    <p:inputText value="#{item.rowData.get(23).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="25">
+                                    <p:inputText value="#{item.rowData.get(24).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="26">
+                                    <p:inputText value="#{item.rowData.get(25).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="27">
+                                    <p:inputText value="#{item.rowData.get(26).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="28">
+                                    <p:inputText value="#{item.rowData.get(27).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="29" rendered="#{rainfall_data_old.monthEndDate>=29}">
+                                    <p:inputText value="#{item.rowData.get(28).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="30" rendered="#{rainfall_data_old.monthEndDate>=30}">
+                                    <p:inputText value="#{item.rowData.get(29).entry_unit}" size="4"/>
+                                </p:column>
+                                <p:column styleClass="right-text"  headerText="31" rendered="#{rainfall_data_old.monthEndDate>=31}">
+                                    <p:inputText value="#{item.rowData.get(30).entry_unit}" size="4"/>
+                                </p:column>
+                            </p:dataTable>
+                            <script type="text/javascript">
+                                setTableColumnTitle();
+                            </script>
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker,.component-width,.component-width select{
+                        width:200px;
+                        max-width: 200px;
+                        max-height:100px;
+                    }
+                </style>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form6" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Masters" url="#{Hp_GlobalSettings.brHp_mst}" />                          
+                        <p:menuitem value="Watershed Members" url="#" />  
+                    </p:breadCrumb> 
+                    <div>
+                        <h:panelGroup id="pnl_tbl_member">
+
+                            <p:dataTable 
+                                id="tbl_member"
+                                var="wmem"  value="#{wmembers.tbl_wmember_list}"
+                                filteredValue="#{wmembers.tbl_wmember_list_filtered}"
+                                filterDelay="300"
+                                paginator="true"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                rowsPerPageTemplate="5,10,15,20"
+                                paginatorPosition="top"
+                                rows="5"
+                                editable="true"
+                                styleClass="component-margin ui-datatable-hor-scroll">  
+                                <f:facet name="header">  
+                                    Members Detail
+                                </f:facet>
+                                <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="rowEdit" listener="#{wmembers.WshedMemEdit}"  update="@this"/> 
+
+                                <p:column style="width: 65px" headerText="Watershed Name" 
+                                          sortBy="#{wmem.memWshedNo.wshedName}"
+                                          filterBy="#{wmem.memWshedNo.wshedName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{wmem.memWshedNo.wshedName}
+                                </p:column>
+                                <p:column style="text-align: center" headerText="Member Name"
+                                          sortBy="#{wmem.memName}"
+                                          filterBy="#{wmem.memName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{wmem.memName}"/>                                                   
+
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_memName" value="#{wmem.memName}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+
+                                </p:column>
+                                <p:column style="text-align: center" headerText="Member Type">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="" rendered="#{wmem.memType==''}"/>
+                                            <h:outputText value="Supervisor" rendered="#{wmem.memType=='S'}"/>
+                                            <h:outputText value="Member" rendered="#{wmem.memType=='M'}"/>                                               
+
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu id="ddl_mtype" value="#{wmem.memType}" styleClass="component-width">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItem itemValue="S" itemLabel="Supervisor"/>
+                                                <f:selectItem itemValue="M" itemLabel="Member"/>
+                                            </h:selectOneMenu> 
+                                        </f:facet>  
+                                    </p:cellEditor>  
+
+                                </p:column>
+                                <p:column style="width:60px">  
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-pencil"/>
+                                    </f:facet>
+                                    <p:rowEditor />  
+                                </p:column>  
+                                <p:column style="width:20px">
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-trash"/>
+                                    </f:facet>
+
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     process=":form6:pnl_tbl_member"
+                                                     update=":form6:pnl_tbl_member">
+                                        <f:setPropertyActionListener
+                                            value="#{member}"
+                                            target="#{wmembers.ent_member_remove}"/>
+                                    </p:commandButton>
+
+                                </p:column>
+
+
+
+
+                            </p:dataTable>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+                            <p:panel header="Member Entry" id="pnl_member_entry" styleClass="component-margin" toggleable="true">
+
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label" align="right">Watershed : </td>
+                                        <td> <h:selectOneMenu id="ddl_wshed" value="#{wmembers.ddl_wshed}"
+                                                              styleClass="component-width"
+                                                              >
+                                                <f:selectItems value="#{wmembers.ddl_wshed_options}"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Member Name :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_mname" value="#{wmembers.txt_mname}"
+                                                          style="text-transform: uppercase"/> 
+                                        </td>
+
+                                        <td class="entry-component-label" align="right">Member Type : 
+                                        </td>
+                                        <td>
+                                            <h:selectOneMenu id="ddl_mtype" value="#{wmembers.ddl_mtype}" styleClass="component-width">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItem itemValue="S" itemLabel="Supervisor"/>
+                                                <f:selectItem itemValue="M" itemLabel="Member"/>
+                                            </h:selectOneMenu> 
+                                        </td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" align="right">
+                                            <p:commandButton id="btn_member_create"
+                                                             actionListener="#{wmembers.btn_member_create}"
+                                                             value="Save"
+                                                             icon="ui-icon-disk"
+                                                             process="pnl_member_entry"
+                                                             update="growl1,pnl_member_entry,pnl_tbl_member"
+
+                                                             />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p:panel>
+                        </h:panelGroup>
+
+                    </div>
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

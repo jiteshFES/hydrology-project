@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker  ,.component-width,.component-width select{
+                        width:200px;
+                        max-width: 200px;
+                        max-height:100px;
+                    }
+                </style>
+                <script type="text/javascript" src="#{GlobalResources.rsc_js_plg_input_currencyFormatter}"/>
+                 <script type="text/javascript">
+                    function validateEntries(){
+                        var valid=true;
+                        if(valid){
+                            $('#pnl_soil_data_entry select').each(function(){                                
+                                if($(this).val()==null || $(this).val().trim()==''){showRequiredMessage();valid=false;return;}
+                            })
+                        }
+                        $('#pnl_soil_data_entry input').each(function(){                                
+                            if($(this).val().trim()==''){showRequiredMessage();valid=false;return;}
+                        })                        
+                        return valid;  
+                    }
+                    function showRequiredMessage(){
+                        SetAndShowDialog('GeneralDialog','Fill all required field','Please fill all required field');
+                    }
+                </script>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form3b" prependId="false">
+                    <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Data Entry" url="#{Hp_GlobalSettings.brHp_entry}" />                          
+                        <p:menuitem value="Soil Moisture Data" url="#" />  
+                    </p:breadCrumb>  
+                    <div class="component-margin">
+                        <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+
+                            <p:commandButton value="Add New"
+                                             icon="ui-icon-plusthick"
+                                             actionListener="#{soilData.addNewData}"
+                                             process="@this"
+                                             update="pnl_soil_data_entry"
+                                             oncomplete="pw_dlg_soil_data_entry.show();"/>                            
+                            <br/><br/>
+
+                        </h:panelGroup>
+                        <div>
+                            <h:panelGroup id="pnl_tbl_soildata">
+                                <p:dataTable 
+                                    id="tbl_soildata"
+                                    var="soildata"  value="#{soilData.tbl_soildata_list}"
+                                    filteredValue="#{soilData.tbl_soildata_list_filtered}"
+                                    filterDelay="300"
+                                    paginator="true"
+                                    paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                    rowsPerPageTemplate="5,10,15,20"
+                                    paginatorPosition="top"
+                                    styleClass="ui-datatable-hor-scroll"
+                                    rows="5">  
+                                    <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                    <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                    <f:facet name="header">  
+                                        Soil Moisture Data
+                                    </f:facet>
+                                    <p:column  headerText="Watershed Name" 
+                                               sortBy="#{soildata.soilWshedNo.wshedName}"
+                                               filterBy="#{soildata.soilWshedNo.wshedName}"
+                                               filterMatchMode="contains"
+                                               >  
+                                        #{soildata.soilWshedNo.wshedName}
+                                    </p:column>
+                                    <p:column  headerText="Farmer Name"> 
+                                        <h:outputText value="#{soildata.soilFarmer}"/>                                                   
+                                    </p:column> 
+                                    <p:column style="width: 65px" headerText="Plot Survey No"> 
+                                        <div align="right">
+                                            #{soildata.soilSurveyNo}
+                                        </div>
+                                    </p:column>
+                                    <p:column style="width: 65px" headerText="Collection Date">
+                                        <h:outputText value="#{soildata.soilDate}"> 
+                                            <f:convertDateTime pattern="#{GlobalUtilities.dateFormat}"/>
+                                        </h:outputText>                                        
+                                    </p:column>
+                                    <p:column style="width: 65px" headerText="Percentage">
+                                        <div align="right">
+                                            #{soildata.soilPercentage}
+                                        </div>
+                                    </p:column> 
+                                    <p:column style="width:20px;display:#{GlobalSettings.ent_login_user.pfaRsoNumber!=null?'table-cell':'none'}">  
+                                        <f:facet name="header">
+                                            <center>
+                                                <span class="ui-icon ui-icon-pencil"/>
+                                            </center>
+                                        </f:facet>
+                                        <p:commandButton icon="ui-icon-pencil"
+                                                         process=":form3b:pnl_tbl_soildata"
+                                                         update=":form3b:pnl_soil_data_entry"
+                                                         oncomplete="pw_dlg_soil_data_entry.show();">
+                                            <f:setPropertyActionListener
+                                                value="#{soildata}"
+                                                target="#{soilData.ent_soildata_edit}"/>
+                                        </p:commandButton>
+                                    </p:column>  
+                                    <p:column style="width:20px;display:#{GlobalSettings.ent_login_user.pfaRsoNumber!=null?'table-cell':'none'}">
+                                        <f:facet name="header">
+                                            <center>
+                                                <span class="ui-icon ui-icon-trash"/>
+                                            </center>
+                                        </f:facet>
+                                        <p:commandButton icon="ui-icon-trash"
+                                                         process=":form3b:pnl_tbl_soildata"
+                                                         update=":form3b:pnl_tbl_soildata">
+                                            <f:setPropertyActionListener
+                                                value="#{soildata}"
+                                                target="#{soilData.ent_soildata_remove}"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </h:panelGroup>
+
+                        </div>
+                    </div>
+
+                    <h:panelGroup id="pnl_soil_data_entry">
+                        <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+                            <p:dialog
+                                header="Soil Data Entry" id="dlg_soil_data_entry" 
+                                widgetVar="pw_dlg_soil_data_entry"
+                                modal="true">                            
+                                <table class="element-table">
+                                    <tr>
+                                        <td class="entry-component-label" align="right">Watershed : </td>
+                                        <td> <h:selectOneMenu id="ddl_wshed" value="#{soilData.ddl_wshed}"
+                                                              valueChangeListener="#{soilData.ddl_wshed_changed}"
+                                                              styleClass="component-width"
+                                                              >
+                                                <f:selectItems value="#{soilData.ddl_wshed_options}"/>
+                                                <p:ajax event="change"
+                                                        process="ddl_wshed"
+                                                        update="ddl_farmer,ddl_srvyno"
+                                                        />
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Farmer :
+                                        </td>
+                                        <td><h:selectOneMenu id="ddl_farmer" value="#{soilData.ddl_farmer}"
+                                                             valueChangeListener="#{soilData.ddl_farmer_changed}"
+                                                             styleClass="component-width"
+                                                             >
+                                                <f:selectItems value="#{soilData.ddl_farmer_options}"/>
+                                                <p:ajax event="change"
+                                                        process="ddl_farmer"
+                                                        update="ddl_srvyno"
+                                                        />
+                                            </h:selectOneMenu> 
+                                        </td>
+                                        <td class="entry-component-label" align="right">Survey No. : 
+                                        </td>
+                                        <td>
+                                            <h:selectOneMenu id="ddl_srvyno" value="#{soilData.ddl_srvyno}"
+                                                             styleClass="component-width"
+                                                             >
+                                                <f:selectItems value="#{soilData.ddl_srvyno_options}"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="entry-component-label" align="right" > Data Collect. Date :
+                                        </td>
+                                        <td> <p:calendar id="cal_colldate" value="#{soilData.cal_colldate}" 
+                                                         readonlyInput="true"
+                                                         navigator="true" pattern="#{GlobalUtilities.dateFormat}"  size="10"/> 
+                                        </td>
+                                        <td class="entry-component-label" align="right" > Percentage :
+                                        </td>
+                                        <td> <h:inputText styleClass="component-width" id="txt_percentage" value="#{soilData.txt_percentage}"
+                                                          style="text-align: right"
+                                                          /> 
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" align="right">
+                                            <p:commandButton id="btn_soildata_create"
+                                                             actionListener="#{soilData.btn_soildata_create}"
+                                                             value="Save"
+                                                             icon="ui-icon-disk"
+                                                             process=":form3b:pnl_soil_data_entry"
+                                                             update="growl1,:form3b:pnl_soil_data_entry,pnl_tbl_soildata"
+                                                             rendered="#{!soilData.updateMode}"
+                                                             onclick="if(!validateEntries()){return false;}"
+                                                             />
+                                            <p:commandButton id="btn_soildata_edit"
+                                                             actionListener="#{soilData.btn_soildata_edit}"
+                                                             value="Update"
+                                                             icon="ui-icon-disk"
+                                                             process=":form3b:pnl_soil_data_entry"
+                                                             update="growl1,:form3b:pnl_soil_data_entry,pnl_tbl_soildata"
+                                                             rendered="#{soilData.updateMode}"
+                                                             onclick="if(!validateEntries()){return false;}"
+                                                             />
+                                        </td>
+                                    </tr>
+                                </table>                    
+                            </p:dialog>
+                            <script type="text/javascript">
+                                $('#txt_percentage').autoNumeric({aSep: '', dGroup: '', vMin: '0',vMax:'100.00',aPad: false});
+                            </script>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

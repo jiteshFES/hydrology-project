@@ -1,0 +1,1 @@
+if(($('#ddl_watershed select').val().trim()=='' || $('#ddl_streamgauge select').val().trim())==''){}

@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <body>
+
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="head">
+                <style type="text/css">
+                    input.hasDatepicker  ,.component-width,.component-width select{
+                        width:150px;
+                        max-width: 150px;
+                        max-height:100px;
+                    }
+                </style>
+            </ui:define>
+
+            <ui:define name="page_header_icon">
+                
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="form2" prependId="false">
+                     <p:breadCrumb styleClass="component-margin">  
+                        <p:menuitem value="Hydrology Programme" url="#{Hp_GlobalSettings.brHp}" />  
+                        <p:menuitem value="Masters" url="#{Hp_GlobalSettings.brHp_mst}" />                          
+                        <p:menuitem value="Rain Gauge" url="#" />  
+                    </p:breadCrumb>  
+                    <div>
+                        <h:panelGroup id="pnl_tbl_rgauge">
+
+                            <p:dataTable 
+                                id="tbl_rgauge"
+                                var="rgauge"  value="#{raingauge.tbl_rgauge_list}"
+                                filteredValue="#{raingauge.tbl_rgauge_list_filtered}"
+                                filterDelay="300"
+                                paginator="true"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+                                rowsPerPageTemplate="5,10,15,20"
+                                paginatorPosition="top"
+                                rows="5"
+                                editable="true"
+                                styleClass="component-margin ui-datatable-hor-scroll">  
+                                <p:ajax event="filter"  global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <p:ajax event="page" global="false" onerror="ShowConnectionError('GeneralDialog');"/>
+                                <f:facet name="header">  
+                                    Rain Gauge Master 
+                                </f:facet>
+
+                                <p:ajax event="rowEdit" listener="#{raingauge.rgaugeEdit}"  update="@this"/> 
+
+                                <p:column style="width: 65px" headerText="Watershed Name" 
+                                          sortBy="#{rgauge.rgWshedNo.wshedName}"
+                                          filterBy="#{rgauge.rgWshedNo.wshedName}"
+                                          filterMatchMode="contains"
+                                          >  
+                                    #{rgauge.rgWshedNo.wshedName}
+                                </p:column> 
+                                <p:column style="text-align: center" headerText="Gauge Type">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="" rendered="#{rgauge.rgGuageType==null}"/>
+                                            <h:outputText value="Automatic" rendered="#{rgauge.rgGuageType=='A'}"/>
+                                            <h:outputText value="Manual" rendered="#{rgauge.rgGuageType=='M'}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu id="ddl_gtype" value="#{rgauge.rgGuageType}">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItem itemValue="A" itemLabel="Automatic"/>
+                                                <f:selectItem itemValue="M" itemLabel="Manual"/>
+                                            </h:selectOneMenu>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+                                <p:column style="text-align: center" headerText="Installation Date">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{rgauge.rgInstallDate}"> 
+                                                <f:convertDateTime pattern="#{GlobalUtilities.dateFormat}"/>
+                                            </h:outputText>
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:calendar value="#{rgauge.rgInstallDate}" 
+                                                        readOnlyInput="true" navigator="true" 
+                                                        pattern="#{GlobalUtilities.dateFormat}"/> 
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+                                <p:column style="text-align: center" headerText="Gauge Location">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{rgauge.rgGuageLocation}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_rgLocation" value="#{rgauge.rgGuageLocation}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+                                <p:column style="text-align: center" headerText="Lat./GPS North">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{rgauge.rgGpsN}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_rgGpsn" value="#{rgauge.rgGpsN}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="text-align: center" headerText="Lat./GPS East">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{rgauge.rgGpsE}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_rgGpse" value="#{rgauge.rgGpsE}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="text-align: center" headerText="Plot Elevation (in feet)">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{rgauge.rgElevation}"/>                                                   
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:inputText id="txt_rgElevation" value="#{rgauge.rgElevation}"/>
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>
+
+                                <p:column style="width:60px">  
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-pencil"/>
+                                    </f:facet>
+                                    <p:rowEditor />  
+                                </p:column>  
+
+                                <p:column style="width:20px">
+                                    <f:facet name="header">
+                                        <span class="ui-icon ui-icon-trash"/>
+                                    </f:facet>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     process=":form2:pnl_tbl_rgauge"
+                                                     update=":form2:pnl_tbl_rgauge">
+                                        <f:setPropertyActionListener
+                                            value="#{rgauge}"
+                                            target="#{raingauge.ent_rgauge_remove}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+
+                            </p:dataTable>
+                        </h:panelGroup>
+
+                    </div>    
+
+                    <h:panelGroup rendered="#{GlobalSettings.ent_login_user.pfaRsoNumber!=null}">
+                        <p:panel header="Rain Gauge Entry" id="pnl_rgauge_entry" styleClass="component-margin" toggleable="true">
+                            <div class="scrolling-div">
+                            <table class="element-table">
+                                <tr>
+                                    <td class="entry-component-label" align="right">Watershed : </td>
+                                    <td> <h:selectOneMenu id="ddl_wshed" value="#{raingauge.ddl_wshed}"
+                                                          styleClass="component-width"
+                                                          >
+                                            <f:selectItems value="#{raingauge.ddl_wshed_options}"/>
+                                        </h:selectOneMenu>
+                                    </td>                                   
+
+                                    <td class="entry-component-label" align="right">Gauge Type : 
+                                    </td>
+                                    <td>
+                                        <h:selectOneMenu id="ddl_gtype" value="#{raingauge.ddl_gtype}" styleClass="component-width">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItem itemValue="A" itemLabel="Automatic"/>
+                                            <f:selectItem itemValue="M" itemLabel="Manual"/>
+                                        </h:selectOneMenu> 
+                                    </td>
+                                    <td class="entry-component-label" align="right"> Installation Date:</td>
+                                    <td> <p:calendar id="cal_initdt" value="#{raingauge.cal_installdt}" 
+                                                     readOnlyInput="true" navigator="true" pattern="#{GlobalUtilities.dateFormat}"  size="10"/> 
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="entry-component-label" align="right" > Gauge Location:
+                                    </td>
+                                    <td> <h:inputText styleClass="component-width" id="txt_glocation" value="#{raingauge.txt_glocation}"
+                                                      style="text-transform: uppercase"/> 
+                                    </td>
+
+                                    <td class="entry-component-label" align="right" > GPS North:
+                                    </td>
+                                    <td> <h:inputText id="txt_gpsn" value="#{raingauge.txt_gpsn}" styleClass="component-width"/> 
+                                    </td>
+
+                                    <td class="entry-component-label" align="right" > GPS East:
+                                    </td>
+                                    <td> <h:inputText id="txt_gpse" value="#{raingauge.txt_gpse}" styleClass="component-width"/> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="entry-component-label" align="right" > Elevation (in feet):
+                                    </td>
+                                    <td> <h:inputText id="txt_gelevation" value="#{raingauge.txt_gelevation}" styleClass="component-width"/> 
+                                    </td>
+
+                                    <td colspan="4" align="right">
+                                        <p:commandButton id="btn_rgauge_create"
+                                                         actionListener="#{raingauge.btn_rgauge_create}"
+                                                         value="Save"
+                                                         icon="ui-icon-disk"
+                                                         process="pnl_rgauge_entry"
+                                                         update="growl1,pnl_rgauge_entry,pnl_tbl_rgauge"
+
+                                                         />
+                                    </td>
+                                </tr>
+                            </table>
+                            </div>
+                        </p:panel>
+                    </h:panelGroup>
+
+
+                    <p:growl id="growl1" sticky="true" showDetail="true"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>
